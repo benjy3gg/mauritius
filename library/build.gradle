@@ -35,7 +35,7 @@ def libVersion = '1.0.0'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 4
@@ -45,32 +45,6 @@ android {
     }
 }
 
-publish {
-    /**
-     * Properties for BinTray upload
-     */
-    Properties properties = new Properties()
-    File bintrayPropertiesFile = project.file('bintray.properties');
-    if (bintrayPropertiesFile.exists()) {
-        properties.load(bintrayPropertiesFile.newDataInputStream())
-    }
-    def btrayUser = properties.getProperty("bintray.user", "")
-    def btrayKey = properties.getProperty("bintray.apikey", "")
-
-    bintrayUser = btrayUser
-    bintrayKey = btrayKey
-    userOrg = btrayUser
-    groupId = 'org.adw.library'
-    artifactId = 'discrete-seekbar'
-    licences = "['Apache-2.0']"
-    publishVersion = libVersion
-    description = 'DiscreteSeekbar is my poor attempt to develop an android implementation of the Discrete Slider component from the Google Material Design Guidelines'
-    website = 'https://github.com/AnderWeb/discreteSeekBar'
-    issueTracker = 'https://github.com/AnderWeb/discreteSeekBar/issues'
-    repository = 'https://github.com/AnderWeb/discreteSeekBar.git'
-    autoPublish = false
-    dryRun = false
-}
 
 dependencies {
     compile 'com.android.support:support-v4:22.1.1'

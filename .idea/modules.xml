@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cheesesquare-master.iml" filepath="$PROJECT_DIR$/cheesesquare-master.iml" />
-      <module fileurl="file://$PROJECT_DIR$/discreetSeekBar/discreetSeekBar.iml" filepath="$PROJECT_DIR$/discreetSeekBar/discreetSeekBar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
     </modules>
   </component>
 </project>

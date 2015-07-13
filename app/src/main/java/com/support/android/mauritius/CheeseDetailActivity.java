@@ -181,7 +181,6 @@ public class CheeseDetailActivity extends AppCompatActivity {
 
         final DiscreteSeekBar progressBar = (DiscreteSeekBar) findViewById(R.id.ratingIndicator);
         progressBar.setAlpha(0);
-        progressBar.showFloater();
         progressBar.setTrackColor(getResources().getColor(R.color.white));
         progressBar.setThumbColor(getResources().getColor(R.color.white), getResources().getColor(R.color.cyan_500));
         progressBar.setScrubberColor(getResources().getColor(R.color.white));
