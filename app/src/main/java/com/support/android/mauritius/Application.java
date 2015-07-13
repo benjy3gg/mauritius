@@ -25,13 +25,13 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
 
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(
-                                Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(
-                                Stetho.defaultInspectorModulesProvider(this))
-                        .build());
+//        Stetho.initialize(
+//                Stetho.newInitializerBuilder(this)
+//                        .enableDumpapp(
+//                                Stetho.defaultDumperPluginsProvider(this))
+//                        .enableWebKitInspector(
+//                                Stetho.defaultInspectorModulesProvider(this))
+//                        .build());
 
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "cJQ7e6I2efYQmUPdoZGzmSejA07UNrC7BdDKKLKc", "wJLcGmxxuJfc3LdZZVzMoXjJprUFAOTTryP7SsNl");

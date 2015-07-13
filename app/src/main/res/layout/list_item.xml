@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="1dp">
+    android:padding="4dp">
 
     <ImageView
         android:id="@+id/avatar"
@@ -25,10 +25,11 @@
             android:text="placeholder"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:background="?colorPrimary"
+            android:background="@color/teal_500_a"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:padding="16dp"/>
+            android:padding="16dp"
+        android:autoText="false" />
 
     <cn.bingoogolapple.badgeview.BGABadgeTextView
             android:id="@+id/badgeRating"

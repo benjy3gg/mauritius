@@ -1,1 +1,1 @@
-include ':app', ':discreetSeekBar', ':library'
+include ':app', ':library'

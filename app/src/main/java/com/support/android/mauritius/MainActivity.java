@@ -21,14 +21,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -43,6 +42,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.florent37.materialviewpager.MaterialViewPager;
+import com.github.florent37.materialviewpager.header.HeaderDesign;
 import com.parse.FindCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
@@ -53,7 +53,6 @@ import com.parse.ParseUser;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -61,11 +60,13 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout mDrawerLayout;
+    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle mDrawerToggle;
     private ViewPager viewPager;
     private MaterialViewPager materialViewPager;
     private TabLayout tabLayout;
     private Adapter adapter;
+    private Toolbar toolbar;
 
     @Override
     protected void onDestroy() {
@@ -81,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
         registerReceiver(newDrinkBroadcastReceiver, new IntentFilter("NEW_DRINK"));
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle("Mauritius");
-        toolbar.setSubtitle("Die beste Cocktail App");
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        toolbar.setTitle("Mauritius");
+//        toolbar.setSubtitle("Die beste Cocktail App");
         final String[] urlArray = {"http://cache4.asset-cache.net/gc/483636951-bartender-serves-two-mojito-cocktails-during-gettyimages.jpg?v=1&c=IWSAsset&k=2&d=X7WJLa88Cweo9HktRLaNXj%2fbyJLJoGDgnM08yE1wUIkYtJe9BJFcNp623v2oHLdd7XFgMTeUXJOjXAAsH1CRvG3pbL8S%2bhx9wL5X8fe8ywA%3d&b=NkI2",
                              "http://cache3.asset-cache.net/gc/553331677-cocktail-making-gettyimages.jpg?v=1&c=IWSAsset&k=2&d=eXI8V6OIbW%2b0S%2f1zVordgmQs7FrInnbTvDj6G3Wp1uDyCMXBp77fBjjHotXHohI7&b=Qzg=",
                              "http://cache3.asset-cache.net/gc/540070819-barware-gettyimages.jpg?v=1&c=IWSAsset&k=2&d=WeJFXXjPSy8iTSi6l2XDX%2fnKsolB%2bjCc2jh8yT6fgtbAYuZELX3uU1jGNxKm%2bfq6FZRcn7QhUtTL%2f96mhkTKfg%3d%3d&b=Njk=",
@@ -106,24 +107,39 @@ public class MainActivity extends AppCompatActivity {
                 "Top Rated",
                 "Gangster"};
 
-        final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-        ab.setDisplayHomeAsUpEnabled(true);
+//        final ActionBar ab = getSupportActionBar();
+//        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+//        ab.setDisplayHomeAsUpEnabled(true);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
+        materialViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
+        toolbar = materialViewPager.getToolbar();
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        //materialViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        if (viewPager != null) {
-            setupViewPager(viewPager, tabLayout);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+
+            final ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setDisplayShowHomeEnabled(true);
+                actionBar.setDisplayShowTitleEnabled(false);
+                actionBar.setDisplayUseLogoEnabled(false);
+                actionBar.setHomeButtonEnabled(true);
+            }
         }
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, 0, 0);
+        mDrawer.setDrawerListener(mDrawerToggle);
+
+        setupViewPager(materialViewPager.getViewPager());
+
+
+//        tabLayout = (TabLayout) findViewById(R.id.tabs);
+//        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String newDrinkId = intent.getStringExtra("drinkId");
             Log.d("MainActivityBroadcast", "drinkId: " + newDrinkId);
-            setupViewPager(viewPager, tabLayout);
+            setupViewPager(viewPager);
         }
     };
 
@@ -184,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                mDrawer.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_logout:
                 ParseUser.logOutInBackground(new LogOutCallback() {
@@ -200,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupViewPager(final ViewPager viewPager, final TabLayout tabLayout) {
+    private void setupViewPager(final ViewPager viewPager) {
         adapter = new Adapter(getSupportFragmentManager());
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Category");
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -213,9 +229,53 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("score", "CategoryName: " + categoryName);
                     }
                     Log.d("score", "Categories: " + categoryList.size());
-                    viewPager.setAdapter(adapter);
-                    viewPager.setOffscreenPageLimit(2);
-                    tabLayout.setupWithViewPager(viewPager);
+                    materialViewPager.getViewPager().setAdapter(adapter);
+                    materialViewPager.getViewPager().setOffscreenPageLimit(6);
+                    materialViewPager.getPagerTitleStrip().setViewPager(materialViewPager.getViewPager());
+                    materialViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
+                        @Override
+                        public HeaderDesign getHeaderDesign(int page) {
+                            switch (page) {
+                                case 0:
+                                    return HeaderDesign.fromColorAndDrawable(
+                                            getResources().getColor(R.color.teal_500),
+                                            getResources().getDrawable(R.drawable.header_1, getTheme()));
+                                case 1:
+                                    return HeaderDesign.fromColorAndDrawable(
+                                            getResources().getColor(R.color.teal_500),
+                                            getResources().getDrawable(R.drawable.header_2, getTheme()));
+                                case 2:
+                                    return HeaderDesign.fromColorAndDrawable(
+                                            getResources().getColor(R.color.teal_500),
+                                            getResources().getDrawable(R.drawable.header_3, getTheme()));
+                                case 3:
+                                    return HeaderDesign.fromColorAndDrawable(
+                                            getResources().getColor(R.color.teal_500),
+                                            getResources().getDrawable(R.drawable.header_4, getTheme()));
+                                case 4:
+                                    return HeaderDesign.fromColorAndDrawable(
+                                            getResources().getColor(R.color.teal_500),
+                                            getResources().getDrawable(R.drawable.header_5, getTheme()));
+                                case 5:
+                                    return HeaderDesign.fromColorAndDrawable(
+                                            getResources().getColor(R.color.teal_500),
+                                            getResources().getDrawable(R.drawable.header_6, getTheme()));
+                                case 6:
+                                    return HeaderDesign.fromColorAndDrawable(
+                                            getResources().getColor(R.color.teal_500),
+                                            getResources().getDrawable(R.drawable.header_7, getTheme()));
+                                case 7:
+                                    return HeaderDesign.fromColorAndDrawable(
+                                            getResources().getColor(R.color.teal_500),
+                                            getResources().getDrawable(R.drawable.header_8, getTheme()));
+                            }
+
+                            //execute others actions if needed (ex : modify your header logo)
+
+                            return null;
+                        }
+                    });
+                    materialViewPager.getViewPager().setCurrentItem(0);
 
                 } else {
                     Log.d("score", "Error: " + e.getMessage());
@@ -233,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
-                mDrawerLayout.closeDrawers();
+                mDrawer.closeDrawers();
                 return true;
             }
         });

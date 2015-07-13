@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +40,9 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -52,10 +55,16 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
+import com.txusballesteros.widgets.AnimationMode;
+import com.txusballesteros.widgets.FitChart;
+import com.txusballesteros.widgets.FitChartValue;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static com.parse.ParseObject.*;
 
@@ -148,6 +157,26 @@ public class CheeseDetailActivity extends AppCompatActivity {
             }
         });
 
+
+
+//        fabToolbar.setButtonOnClickListener(new View.OnClickListener() {
+//
+//            private LinearLayout detailOverlay;
+//
+//            @Override
+//            public void onClick(View v) {
+//                detailOverlay = (LinearLayout) findViewById(R.id.detailOverlay);
+//                detailOverlay.animate().alpha(0.3f).setDuration(1000).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+//                detailOverlay.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        fabToolbar.hide();
+//                        detailOverlay.animate().alpha(0f).setDuration(1000).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+//                    }
+//                });
+//            }
+//        });
+
         fabToolbar.setColor(getResources().getColor(R.color.amber_500));
 
         final DiscreteSeekBar progressBar = (DiscreteSeekBar) findViewById(R.id.ratingIndicator);
@@ -206,6 +235,7 @@ public class CheeseDetailActivity extends AppCompatActivity {
             }
         });
 
+        //reveal the bottom view
         final View myView = findViewById(R.id.nestView);
         myView.setAlpha(0);
         myView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -231,11 +261,37 @@ public class CheeseDetailActivity extends AppCompatActivity {
                     // make the view visible and start the animation
                     //v.setVisibility(View.VISIBLE);
                     myView.animate().alpha(1f).setDuration(1000).setStartDelay(500).start();
+                    anim.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                        }
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            setupCounter(progressBar.getProgress(), drinkrating);
+                        }
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                        }
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                        }
+
+                    });
                     anim.start();
                 }
 
             }
         });
+    }
+
+    private void setupCounter(int progress, float drinkrating) {
+        FitChart fitChart = (FitChart) findViewById(R.id.fitChart);
+        fitChart.setMinValue(0f);
+        fitChart.setMaxValue(30f);
+        Collection<FitChartValue> values = new ArrayList<>();
+        values.add(new FitChartValue((int)(this.drinkrating *10), Color.parseColor("#FF0000")));
+        values.add(new FitChartValue(progress, Color.parseColor("#00FF00")));
+        fitChart.setValues(values);
     }
 
 

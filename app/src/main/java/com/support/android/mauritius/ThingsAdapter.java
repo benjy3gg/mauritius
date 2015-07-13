@@ -3,21 +3,18 @@ package com.support.android.mauritius;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.PorterDuff;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -35,6 +32,7 @@ import cn.bingoogolapple.badgeview.BGABadgeTextView;
  */
 public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder> {
 
+    private final String mCategory;
     private ParseQueryAdapter<ParseObject> parseAdapter;
 
     private ViewGroup parseParent;
@@ -43,10 +41,12 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
     private ProgressDialog mProgressDialog;
     private Context mContext;
     private BGABadgeTextView badgeRating;
+    private RecyclerViewMaterialAdapter recyclerViewMaterialAdapter;
 
-    public ThingsAdapter(final Context context, ViewGroup parentIn, final String mCategory) {
+    public ThingsAdapter(final Context context, ViewGroup parentIn, final String category) {
         parseParent = parentIn;
         mContext = context;
+        mCategory = category;
 
         ParseQueryAdapter.QueryFactory<ParseObject> factory =
             new ParseQueryAdapter.QueryFactory<ParseObject>() {
@@ -80,13 +80,13 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
                 nameView.setText(object.getString("name"));
 
                 badgeRating = (BGABadgeTextView) v.findViewById(R.id.badgeRating);
-                animateBadge();
                 //badgeRating.setBackgroundColor(v.getResources().getColor(R.color.amber_500));
                 DecimalFormat df = new DecimalFormat("#.##");
                 String rating = df.format(object.getNumber("rating"));
                 badgeRating.showTextBadge(rating);
                 return v;
             }
+
         };
         parseAdapter.addOnQueryLoadListener(new OnQueryLoadListener());
         parseAdapter.loadObjects();
@@ -100,15 +100,15 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
         return vh;
     }
 
-    public void animateBadge() {
+    public void animateBadge(int layoutPosition) {
         badgeRating.setAlpha(0);
         badgeRating.setScaleX(0);
         badgeRating.setScaleY(0);
-        badgeRating.animate().alpha(1).scaleX(1).scaleY(1).setDuration(500).setStartDelay(500).setInterpolator(new BounceInterpolator()).start();
+        badgeRating.animate().alpha(1).scaleX(1).scaleY(1).setDuration(750).setStartDelay(200*layoutPosition).setInterpolator(new AccelerateDecelerateInterpolator()).start();
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         parseAdapter.getView(position, holder.cardView, parseParent);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -122,11 +122,11 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
                 intent.putExtra(CheeseDetailActivity.EXTRA_ID, parseAdapter.getItem(position).getObjectId());
                 intent.putExtra(CheeseDetailActivity.EXTRA_RATING, parseAdapter.getItem(position).getNumber("rating"));
 
-                ArrayList<String>  al = (ArrayList<String>)parseAdapter.getItem(position).get("ingredients");
+                ArrayList<String> al = (ArrayList<String>) parseAdapter.getItem(position).get("ingredients");
                 String[] array = new String[al.size()];
                 al.toArray(array);
 
-                animateBadge();
+                animateBadge(holder.getAdapterPosition());
 
                 intent.putExtra(CheeseDetailActivity.EXTRA_INGREDIENTS, Arrays.toString(array));
                 Pair<View, String> p1 = Pair.create((View) v.findViewById(R.id.avatar), "drinkImage");
@@ -135,7 +135,7 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
 
                 Pair<View, String> p2 = Pair.create((View) fab, "fab");
                 ActivityOptionsCompat options =
-                        ActivityOptionsCompat.makeSceneTransitionAnimation((MainActivity) context, p1, p2);
+                        ActivityOptionsCompat.makeSceneTransitionAnimation((MainActivity) context, p1);
                 ActivityCompat.startActivity((MainActivity) context, intent, options.toBundle());
             }
         });
@@ -144,6 +144,10 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return parseAdapter.getCount();
+    }
+
+    public void setMaterialAdapter(RecyclerViewMaterialAdapter materialAdapter) {
+        recyclerViewMaterialAdapter = materialAdapter;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -166,11 +170,13 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
 //            parseParent.addView(pb);
 //            mProgressDialog = new ProgressDialog(mContext);
 //            mProgressDialog.setIndeterminate(true);
+//            mProgressDialog.setTitle(mCategory);
 //            mProgressDialog.show();
         }
 
         public void onLoaded(List<ParseObject> objects, Exception e) {
             thingsAdapter.notifyDataSetChanged();
+            recyclerViewMaterialAdapter.mvp_notifyDataSetChanged();
 //            mProgressDialog.dismiss();
         }
     }
