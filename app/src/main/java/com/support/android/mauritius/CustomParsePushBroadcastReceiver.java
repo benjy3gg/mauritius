@@ -16,7 +16,7 @@ public class CustomParsePushBroadcastReceiver extends ParsePushBroadcastReceiver
 
     @Override
     protected void onPushReceive(Context context, Intent intent) {
-        super.onPushReceive(context, intent);
+        //super.onPushReceive(context, intent);
         Log.d("push", intent.getAction());
         try {
             JSONObject jD = new JSONObject(intent.getExtras().getString("com.parse.Data"));
@@ -25,16 +25,20 @@ public class CustomParsePushBroadcastReceiver extends ParsePushBroadcastReceiver
                 JSONObject jC = new JSONObject();
             }
             //TODO: check the Channel string, depends on OS level?
-            if (jD.getString("why") == "new") {
+            if (jD.getString("why").equals("new")){
                 context.sendBroadcast(new Intent("NEW_DRINK")
                         .putExtra("drinkId", jD.getString("drinkId"))
                         .putExtra("category", jD.getString("category"))
                         .putExtra("drinkname", jD.getString("name")));
-            } else if (jD.getString("why") == "update") {
+            } else if (jD.getString("why").equals("update")) {
                 context.sendBroadcast(new Intent("UPDATE_DRINK")
                         .putExtra("drinkId", jD.getString("drinkId"))
                         .putExtra("category", jD.getString("category"))
-                        .putExtra("drinkname", jD.getString("name")));
+                        .putExtra("drinkname", jD.getString("name"))
+                        .putExtra("newRating", jD.getDouble("newRating"))
+                        .putExtra("newNumRatings", jD.getInt("newNumRatings"))
+
+                );
             }
         } catch (JSONException e) {
             e.printStackTrace();

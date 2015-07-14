@@ -1,4 +1,4 @@
-<!-- [ Mirror metadata ] generatedAt: 1436485424805 -->
+<!-- [ Mirror metadata ] generatedAt: 1436805423915 -->
 <!-- Generated screen file. Fill the id tags below with content with
 which to populate your previewed layout. For a complete specification
 of sample data, please see http://jimulabs.com/sample-data-specifications/ 
@@ -11,34 +11,9 @@ Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" ov
         <backdrop src="relative_path/image.jpg" /> -->
         <backdrop />
         <!-- TextView Examples:
-        <drinkInfo text="@string/string_resource" />
-        <drinkInfo text="Text literal" textSize="14sp" /> -->
-        <drinkInfo />
-        <listView>
-            <items layout="@android:layout/simple_list_item_1" >
-                <_item>
-                    <text1>Vancouver</text1>
-                </_item>
-                <_item>
-                    <text1>Cairo</text1>
-                </_item>
-                <_item>
-                    <text1>New York</text1>
-                </_item>
-                <_item>
-                    <text1>San Francisco</text1>
-                </_item>
-                <_item>
-                    <text1>Seattle</text1>
-                </_item>
-                <_item>
-                    <text1>Hong Kong</text1>
-                </_item>
-                <_item>
-                    <text1>Tokyo</text1>
-                </_item>
-            </items>
-                </listView>
+        <drinkRatingText text="@string/string_resource" />
+        <drinkRatingText text="Text literal" textSize="14sp" /> -->
+        <drinkRatingText />
         <drinkIngredients />
         <ingredientTextview />
         <drinkComments />

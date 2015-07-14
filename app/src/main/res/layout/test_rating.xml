@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="128dp"
+    xmlns:custom="http://schemas.android.com/tools"
+    android:background="?colorPrimary"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:padding="16dp">
+
+    <com.support.android.mauritius.ArcProgress
+        android:id="@+id/arc_progress"
+        custom:arc_unfinished_color="?colorPrimaryDark"
+        custom:arc_finished_color="?colorAccent"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        custom:arc_progress="0"
+        custom:arc_bottom_text="Rating"
+        custom:arc_text_color="@color/blue_100"
+        custom:arc_suffix_text="  "
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/arc_progress"
+        android:layout_toEndOf="@+id/arc_progress"
+        android:paddingLeft="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/arc_progress">
+
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cocktail"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:text="Testtesttest"
+                android:padding="4dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cocktail"
+                android:layout_alignTop="@+id/arc_progress"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:text="Testtesttest"
+                android:padding="4dp" />
+
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/cocktail"
+            android:layout_alignTop="@+id/arc_progress"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:text="Testtesttest"
+            android:padding="4dp" />
+
+
+    </LinearLayout>
+
+    </RelativeLayout>
+
+    <!-- <com.txusballesteros.widgets.FitChart
+        android:layout_width="94dp"
+        android:layout_height="48dp"
+        app:strokeSize="2dp"
+        app:valueStrokeColor="?colorAccent"
+        app:backStrokeColor="?colorPrimary"
+        app:animationMode="overdraw"
+        android:id="@+id/fitChart"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="3.38"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:rotation="-150"/> -->
+
+</RelativeLayout>

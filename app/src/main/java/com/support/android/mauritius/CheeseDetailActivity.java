@@ -22,31 +22,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
-
 
 import com.expandable.view.ExpandableView;
 import com.github.alexkolpa.fabtoolbar.FabToolbar;
@@ -55,18 +44,10 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
-import com.txusballesteros.widgets.AnimationMode;
-import com.txusballesteros.widgets.FitChart;
-import com.txusballesteros.widgets.FitChartValue;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static com.parse.ParseObject.*;
 
 public class CheeseDetailActivity extends AppCompatActivity {
 
@@ -79,7 +60,7 @@ public class CheeseDetailActivity extends AppCompatActivity {
     private String imgUrl;
     private String ingredients;
     private String drinkId;
-    private float drinkrating;
+    private int drinkrating;
     private final String[] testAuthors = new String[]{"tester", "Hase", "Mongo"};
     private final String[] testComments = new String[]{"Ganz schoen gut", "Mega Geil", "Scheisse"};
     private final String[] testUrls = new String[]{ "http://cache3.asset-cache.net/gc/553331677-cocktail-making-gettyimages.jpg?v=1&c=IWSAsset&k=2&d=eXI8V6OIbW%2b0S%2f1zVordgmQs7FrInnbTvDj6G3Wp1uDyCMXBp77fBjjHotXHohI7&b=Qzg=",
@@ -88,6 +69,8 @@ public class CheeseDetailActivity extends AppCompatActivity {
 
     BroadcastReceiver updateDrinkBroadcastReciever;
     private String drinkName;
+    private BroadcastReceiver newDrinkBroadcastReceiver;
+    private RippleBackground rippleBackground;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +82,7 @@ public class CheeseDetailActivity extends AppCompatActivity {
         imgUrl = intent.getStringExtra(EXTRA_URL);
         ingredients = intent.getStringExtra(EXTRA_INGREDIENTS);
         drinkId = intent.getStringExtra(EXTRA_ID);
+
         drinkrating = intent.getIntExtra(EXTRA_RATING, 0);
 
         TextView textView = (TextView) findViewById(R.id.ingredientTextview);
@@ -112,15 +96,24 @@ public class CheeseDetailActivity extends AppCompatActivity {
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(drinkName);
 
+        rippleBackground=(RippleBackground)findViewById(R.id.ripple);
 
-
-        BroadcastReceiver newDrinkBroadcastReceiver = new BroadcastReceiver() {
+        newDrinkBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String newDrinkId = intent.getStringExtra("drinkId");
-
+                double rating = intent.getDoubleExtra("newRating", 0.0);
+                drinkrating = (int)Math.round(rating * 10);
+                rippleBackground.startRippleAnimation(300);
+                setupCounter(drinkrating);
             }
         };
+
+        registerReceiver(newDrinkBroadcastReceiver, new IntentFilter("UPDATE_DRINK"));
+
+
+
+
 
         setupDetail();
 
@@ -177,12 +170,12 @@ public class CheeseDetailActivity extends AppCompatActivity {
 //            }
 //        });
 
-        fabToolbar.setColor(getResources().getColor(R.color.amber_500));
+        fabToolbar.setColor(getResources().getColor(R.color.amber_700));
 
         final DiscreteSeekBar progressBar = (DiscreteSeekBar) findViewById(R.id.ratingIndicator);
         progressBar.setAlpha(0);
         progressBar.setTrackColor(getResources().getColor(R.color.white));
-        progressBar.setThumbColor(getResources().getColor(R.color.white), getResources().getColor(R.color.cyan_500));
+        progressBar.setThumbColor(getResources().getColor(R.color.white), getResources().getColor(R.color.blue_500));
         progressBar.setScrubberColor(getResources().getColor(R.color.white));
         animateRatingIndicator(progressBar);
         progressBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
@@ -201,7 +194,7 @@ public class CheeseDetailActivity extends AppCompatActivity {
             public void onStopTrackingTouch(final DiscreteSeekBar discreteSeekBar) {
                 fabToolbar.hide();
                 // Create a pointer to an object of class Point with id dlkj83d
-                ParseObject point = createWithoutData("Drink", drinkId);
+                ParseObject point = ParseObject.createWithoutData("Drink", drinkId);
 
                 // Set a new value on quantity
                 JSONObject myObject = new JSONObject();
@@ -266,7 +259,8 @@ public class CheeseDetailActivity extends AppCompatActivity {
                         }
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            setupCounter(progressBar.getProgress(), drinkrating);
+
+                            setupCounter(drinkrating);
                         }
                         @Override
                         public void onAnimationCancel(Animator animation) {
@@ -283,14 +277,46 @@ public class CheeseDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void setupCounter(int progress, float drinkrating) {
+    private void setupCounter(int drinkrating) {
+        /*TextView drinkRatingText = (TextView) findViewById(R.id.drinkRatingText);
+        drinkRatingText.setText((drinkrating / 10f) + " Sterne");
+        drinkRatingText.setAlpha(0);
+        drinkRatingText.animate().alpha(1f).setDuration(500).setStartDelay(500).setInterpolator(new AccelerateDecelerateInterpolator()).start();
         FitChart fitChart = (FitChart) findViewById(R.id.fitChart);
+        fitChart.setRotation(-150);
         fitChart.setMinValue(0f);
-        fitChart.setMaxValue(30f);
+        fitChart.setMaxValue(36f);
         Collection<FitChartValue> values = new ArrayList<>();
-        values.add(new FitChartValue((int)(this.drinkrating *10), Color.parseColor("#FF0000")));
-        values.add(new FitChartValue(progress, Color.parseColor("#00FF00")));
-        fitChart.setValues(values);
+        values.add(new FitChartValue(drinkrating, getResources().getColor(R.color.amber_500)));
+        values.add(new FitChartValue(30f, getResources().getColor(R.color.blue_600)));
+        fitChart.setValues(values); */
+        ArcProgress arcProgress = (ArcProgress) findViewById(R.id.arc_progress);
+        arcProgress.setMax(3);
+        ObjectAnimator ob = new ObjectAnimator().ofFloat(arcProgress, "progress", 0, drinkrating / 10f);
+        ob.setDuration(1000).setStartDelay(500);
+        ob.start();
+        ob.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                rippleBackground.startRippleAnimation(300);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //rippleBackground.stopRippleAnimation();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+
     }
 
 
@@ -365,5 +391,11 @@ public class CheeseDetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sample_actions, menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(newDrinkBroadcastReceiver);
     }
 }

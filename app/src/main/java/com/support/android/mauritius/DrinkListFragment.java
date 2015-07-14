@@ -49,6 +49,12 @@ public class DrinkListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerViewMaterialAdapter mAdapter;
 
+    public ThingsAdapter gettAdapter() {
+        return tAdapter;
+    }
+
+    private ThingsAdapter tAdapter;
+
     public DrinkListFragment(String categoryName) {
         mCategory = categoryName;
         setRetainInstance(true);
@@ -96,7 +102,7 @@ public class DrinkListFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);
         //mRecyclerView.setHasFixedSize(true);
-        ThingsAdapter tAdapter = new ThingsAdapter(getActivity(), recyclerView, mCategory);
+        tAdapter = new ThingsAdapter(getActivity(), recyclerView, mCategory);
         mAdapter = new RecyclerViewMaterialAdapter(tAdapter,2);
         tAdapter.setMaterialAdapter(mAdapter);
         recyclerView.setAdapter(mAdapter);

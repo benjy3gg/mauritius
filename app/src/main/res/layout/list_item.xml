@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="4dp"
+    android:background="?selectableItemBackground" >
 
 <com.support.android.mauritius.SquareRelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="?selectableItemBackground"
-    android:padding="4dp">
+
+
+    android:id="@+id/view">
 
     <ImageView
         android:id="@+id/avatar"
@@ -17,20 +24,24 @@
         android:src="@drawable/cheese_1"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        />
+</com.support.android.mauritius.SquareRelativeLayout>
 
+    <!-- android:background="@color/teal_500_a" -->
     <TextView
-            android:id="@+id/item_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="placeholder"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:background="@color/teal_500_a"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:padding="16dp"
-        android:autoText="false" />
+        android:id="@+id/item_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="placeholder"
+        android:background="?colorPrimary"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:autoText="false"
+        android:layout_below="@+id/view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <cn.bingoogolapple.badgeview.BGABadgeTextView
             android:id="@+id/badgeRating"
@@ -41,8 +52,9 @@
             app:badge_padding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/avatar"
-            android:layout_alignRight="@+id/avatar"
-            android:layout_alignEnd="@+id/avatar" />
-</com.support.android.mauritius.SquareRelativeLayout>
+            android:layout_alignBottom="@+id/item_text"
+            android:layout_alignRight="@+id/item_text"
+            android:layout_alignEnd="@+id/item_text" />
 
+
+</RelativeLayout>

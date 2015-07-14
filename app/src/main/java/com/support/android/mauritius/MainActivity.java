@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         registerReceiver(newDrinkBroadcastReceiver, new IntentFilter("NEW_DRINK"));
+        registerReceiver(newDrinkBroadcastReceiver, new IntentFilter("UPDATE_DRINK"));
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
@@ -185,8 +186,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String newDrinkId = intent.getStringExtra("drinkId");
+            String category = intent.getStringExtra("category");
+            int index = adapter.mFragmentTitles.indexOf(category);
+            DrinkListFragment fragment = (DrinkListFragment)adapter.mFragments.get(index);
             Log.d("MainActivityBroadcast", "drinkId: " + newDrinkId);
-            setupViewPager(viewPager);
+            //setupViewPager(viewPager);
+
+            fragment.gettAdapter().dataUpdateFromServer();
         }
     };
 
@@ -232,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     materialViewPager.getViewPager().setAdapter(adapter);
                     materialViewPager.getViewPager().setOffscreenPageLimit(6);
                     materialViewPager.getPagerTitleStrip().setViewPager(materialViewPager.getViewPager());
-                    materialViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
+                    /*materialViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
                         @Override
                         public HeaderDesign getHeaderDesign(int page) {
                             switch (page) {
@@ -274,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
 
                             return null;
                         }
-                    });
+                    });*/
                     materialViewPager.getViewPager().setCurrentItem(0);
 
                 } else {

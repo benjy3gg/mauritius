@@ -16,6 +16,10 @@
   -->
 
 <resources>
+
+
+  <color name="rippleColor">#0099CC</color>
+
   <color name="red_50">#ffebee</color>
   <color name="red_100">#ffcdd2</color>
   <color name="red_200">#ef9a9a</color>

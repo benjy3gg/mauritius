@@ -1,0 +1,3 @@
+Resource errors:
+
+invalid resource directory name: C:\Users\benjy3gg\Desktop\test\cheesesquare-master\app\src\main\res old_style

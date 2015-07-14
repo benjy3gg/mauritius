@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.android.databinding'
 
 android {
     compileSdkVersion 22
@@ -41,10 +40,11 @@ dependencies {
     compile 'com.github.nicolasjafelle:expandableview:1.0'
     compile 'cn.bingoogolapple:bga-badgeview:1.0.0@aar'
     compile 'com.facebook.stetho:stetho:1.1.1'
-    compile 'com.txusballesteros:FitChart:1.0'
+//    compile 'com.txusballesteros:FitChart:1.0'
+//    compile 'com.github.premnirmal:TextCounter:1.1.0'
+    //compile 'com.skyfishjy.ripplebackground:library:1.0.1'
     compile('com.github.florent37:materialviewpager:1.0.7@aar') {
         transitive = true
     }
     compile 'org.adw.library:discrete-seekbar:1.0.0'
-    compile 'net.droidlabs.mvvm:recyclerview:0.0.2'
 }

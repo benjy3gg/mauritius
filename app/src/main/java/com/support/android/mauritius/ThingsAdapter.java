@@ -3,6 +3,7 @@ package com.support.android.mauritius;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
+import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -23,7 +25,10 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import cn.bingoogolapple.badgeview.BGABadgeTextView;
 
@@ -42,6 +47,7 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
     private Context mContext;
     private BGABadgeTextView badgeRating;
     private RecyclerViewMaterialAdapter recyclerViewMaterialAdapter;
+    private List<ParseObject> mDrinkList = new ArrayList<ParseObject>();
 
     public ThingsAdapter(final Context context, ViewGroup parentIn, final String category) {
         parseParent = parentIn;
@@ -81,7 +87,7 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
 
                 badgeRating = (BGABadgeTextView) v.findViewById(R.id.badgeRating);
                 //badgeRating.setBackgroundColor(v.getResources().getColor(R.color.amber_500));
-                DecimalFormat df = new DecimalFormat("#.##");
+                DecimalFormat df = new DecimalFormat("#.#");
                 String rating = df.format(object.getNumber("rating"));
                 badgeRating.showTextBadge(rating);
                 return v;
@@ -107,6 +113,10 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
         badgeRating.animate().alpha(1).scaleX(1).scaleY(1).setDuration(750).setStartDelay(200*layoutPosition).setInterpolator(new AccelerateDecelerateInterpolator()).start();
     }
 
+    public void dataUpdateFromServer() {
+        parseAdapter.loadObjects();
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         parseAdapter.getView(position, holder.cardView, parseParent);
@@ -117,12 +127,15 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
                 Context context = v.getContext();
 
                 Intent intent = new Intent(context, CheeseDetailActivity.class);
-                intent.putExtra(CheeseDetailActivity.EXTRA_NAME, parseAdapter.getItem(position).getString("name"));
-                intent.putExtra(CheeseDetailActivity.EXTRA_URL, parseAdapter.getItem(position).getString("imgUrl"));
-                intent.putExtra(CheeseDetailActivity.EXTRA_ID, parseAdapter.getItem(position).getObjectId());
-                intent.putExtra(CheeseDetailActivity.EXTRA_RATING, parseAdapter.getItem(position).getNumber("rating"));
+                intent.putExtra(CheeseDetailActivity.EXTRA_NAME, mDrinkList.get(position).getString("name"));
+                intent.putExtra(CheeseDetailActivity.EXTRA_URL, mDrinkList.get(position).getString("imgUrl"));
+                intent.putExtra(CheeseDetailActivity.EXTRA_ID, mDrinkList.get(position).getObjectId());
+                double rating = mDrinkList.get(position).getDouble("rating");
+                int ratingInt = (int)Math.round(rating * 10);
 
-                ArrayList<String> al = (ArrayList<String>) parseAdapter.getItem(position).get("ingredients");
+                intent.putExtra(CheeseDetailActivity.EXTRA_RATING, ratingInt);
+
+                ArrayList<String> al = (ArrayList<String>) mDrinkList.get(position).get("ingredients");
                 String[] array = new String[al.size()];
                 al.toArray(array);
 
@@ -175,9 +188,17 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ViewHolder
         }
 
         public void onLoaded(List<ParseObject> objects, Exception e) {
+            mDrinkList.clear();
+            mDrinkList.addAll(objects);
             thingsAdapter.notifyDataSetChanged();
             recyclerViewMaterialAdapter.mvp_notifyDataSetChanged();
+
+            //drinks = (ObservableList<ParseObject>)objects;
 //            mProgressDialog.dismiss();
         }
+    }
+
+    public void updateDrinkRating(int rating) {
+        //parseAdapter.getItem().n
     }
 }
